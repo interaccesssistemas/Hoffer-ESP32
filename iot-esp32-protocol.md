@@ -13,7 +13,7 @@ A placa **ESP32** envia periodicamente um JSON via HTTPS POST para o servidor da
 - Contador rotativo (para o servidor confirmar que recebeu)
 - Flag de "power-on-reset" (primeiro envio após boot)
 
-O servidor responde com um JSON simples confirmando o recebimento e ecoando o contador. **Phase 1 não envia comandos ainda** — comandos virão na Phase 2.
+O servidor responde com um JSON simples confirmando o recebimento e ecoando o contador e o IP da placa ESP32 para saber que é com ela. 
 
 ---
 
