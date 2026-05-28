@@ -1,10 +1,11 @@
 #
-28-05-2026 Documentaçao para Protocolo do ESP32 Wifi
+# 28-05-2026 Documentaçao para Protocolo do ESP32 Wifi
 
-##
+## O que temos nesse repositorio:
 - Criação do endpoint de testes
 - Documentação do Protocolo de Teste para IOT final
 - Exemplos de teste com Curl
+- Aplicação de exemplo
 
 Mudanças e Perguntas:
 - Estou devolvendo o IP do ESP32 na resposta com 2 chars hex por octeto ou seja 192.168.0.100 = (C0A80064) e não 3 
