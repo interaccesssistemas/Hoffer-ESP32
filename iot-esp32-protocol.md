@@ -2,9 +2,6 @@
 
 > **Versão:** 1.0 (Phase 1 — somente envio de status)
 > **Endpoint produção:** `https://app.braveaccess.com.br/api/iot/heartbeat`
-> **Endpoint preview/teste:** `https://<seu-preview>.preview.emergentagent.com/api/iot/heartbeat`
-
----
 
 ## 1. Visão geral
 
