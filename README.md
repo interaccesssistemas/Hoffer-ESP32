@@ -12,5 +12,4 @@ Mudanças e Perguntas:
 - Me informa o MAC das placas que você tem teste para eu inserir na base de dados, senão não vai funcionar
 - Temos algum led para piscar indicando os eventos da nuvem como MAC não cadastrado, login e senha inválidos, Wifi desconectado, etc
 - Tem um novo parâmetro no json de resposta _result exemplo:"mac_not_found"
-- 
 
