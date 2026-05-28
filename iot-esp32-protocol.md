@@ -5,7 +5,7 @@
 
 ## 1. Visão geral
 
-A placa **Brave-ESP32** envia periodicamente um JSON via HTTPS POST para o servidor da nuvem informando:
+A placa **ESP32** envia periodicamente um JSON via HTTPS POST para o servidor da nuvem informando:
 
 - Identificação (MAC + IP local)
 - Estado dos 8 sensores de entrada
