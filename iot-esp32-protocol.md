@@ -1,6 +1,7 @@
 # Brave Access IoT — Protocolo de Comunicação ESP32 ⇄ Cloud
 
 > **Versão:** 2.0 (Rev-2 — leitores RFID Wiegand TTL/S232 + comando de configuração inicial)
+
 > **Endpoint produção:** `https://app.braveaccess.com.br/api/iot/heartbeat`
 
 ---
