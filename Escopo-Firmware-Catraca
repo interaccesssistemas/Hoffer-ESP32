@@ -1,8 +1,7 @@
-#
-# Escopo Funcionamento Catraca com placa ESP32
+##Escopo Funcionamento Catraca com placa ESP32
 
-# Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento o giro da catraca impedindo o acesso 
-quando não houver um estimulo de liberação por contato seco. 
+#Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento o giro da catraca impedindo o acesso quando não houver 
+um estimulo de liberação por contato seco. 
 
 #Variáveis Internas - 
 Configurações internas no Firmware para ligar e desligar controles
@@ -11,9 +10,9 @@ TimeoutAcesso	=> 12 (Tempo para realizar o acesso. Se esgotado volta a standby);
 Modo_Operante 	=> 1=Bloqueada (Default), 2=Entrada Liberada, 3=Saida Liberada e 4=Sempre Liberada nos dois sentidos
 Time_TerminouE  => 1 (1 segundo) (tempo que o rele 3 fica fechado sinalizando terminou Entrada);
 Time_TerminouS  => 1 (1 segundo) (tempo que o rele 4 fica fechado sinalizando terminou Saída);
-Forma_giro	=> 1=Normal e Default (Lib1=Entrada e Lib2=Saida), 2=Bidirecional (apenas Lib1 é usado. Se iniciou o giro para entrada e 
-concluiu o acesso sinaliza no rele 5 entrada fechando o contato pelo tempo em Time_TerminouE e se iniciou o sentido de 
-saída e finalizou fecha o rele 6 Saída pelo tempo Time_TerminouS;
+Forma_giro	=> 1=Normal e Default (Lib1=Entrada e Lib2=Saida), 2=Bidirecional (apenas Lib1 é usado. Se iniciou o giro para entrada e concluiu o 
+acesso sinaliza no rele 5 entrada fechando o contato pelo tempo em Time_TerminouE e se iniciou o sentido de saída e finalizou fecha o 
+rele 6 Saída pelo tempo Time_TerminouS;
 
 #Uso dos I/O internos
 Sensor 3 - Inicio de giro de entrada
@@ -35,8 +34,8 @@ Operação quando variável interna Forma_giro=1  (Normal e Default )
 Sensor 5 é o pulso Lib1 => Libera 1 giro de Entrada => Atraca Rele 1 (Seta de Entrada Pictograma) no tempo de TimeoutAcesso 
 Sensor 6 é o pulso Lib2 => Libera 1 giro de Saída   => Atraca Rele 2 (Seta de Saída   Pictograma) no tempo de TimeoutAcesso
 
-Após receber o pulso de Lib1 ou Lib2, é possível realizar o acesso sem atracar nenhum relê até a conclusão do acesso que é o giro completo ou timeout 
-definido na variável TimeoutAcesso.
+Após receber o pulso de Lib1 ou Lib2, é possível realizar o acesso sem atracar nenhum relê até a conclusão do acesso que é o giro completo ou
+timeout definido na variável TimeoutAcesso.
 
 Quando concluir o acesso (giro completo) ou por timeout, deve desligar os relês 1 e 2 de Led de pictograma orientativo
 
@@ -48,12 +47,22 @@ Sensor 4 de Low=>High reter Relê 4 para bloquear acesso de Saída
 Enquanto um dos sensores 3 ou 4 estiver interrompido o relê correspondente deve se manter fechado se não teve Lib1 ou Lib2.
 
 #Giro do braço - Conclusão de acesso
-Entrada - A logica é interromper o sensor 3 e manter fechado, depois interromper o sensor 4 e manter fechado, depois abre o sensor 3 e abre o sensor 4;
 
-Saída - A logica é interromper o sensor 4 e manter fechado, depois interromper o sensor 3 e manter fechado, depois abre o sensor 4 e abre o sensor 3; 
+Entrada - A lógica é  ao receber um sinal no sensor 3 , se o sensor 3 manter ativo o sinal e o sensor 4 receber um sinal e manter ativo, então 
+abre o sensor 3 e em seguida abre o sensor 4; 
+
+Saída - A lógica é  ao receber um sinal no sensor 4 , se o sensor 4 manter ativo o sinal e o sensor 3 receber um sinal e manter ativo, então
+abre o sensor 4 e em seguida abre o sensor 3;
 
 Após a conclusão do Acesso de entrada, deve desligar o rele 1 que é o Led de Pictograma de Entrada
 Após a conclusão do Acesso de Saída,   deve desligar o rele 2 que é o Led de Pictograma de Saída
+
+#Logica adicional para testar em campo: 
+Quando o usuário empurra o braço antes da placa receber o pulso de Lib1 mas ele quer passar.
+Adicionar uma lógica caso o sensor 3 de giro de entrada estiver acionado e ocorrer o estímulo de liberação Lib1, o sensor 3 vai a 
+estado low ignorando o primeiro estado atual e iniciar o ciclo de conclusão de acesso. Hoje o cliente tem que voltar, soltar o braço e 
+iniciar o ciclo corretamente, passa o cartão ou o rosto, é feito o lib1 ou lib2 ai ele pode empurrar o braço. Mas o que mais acontece é
+o cliente já ir empurrando o braço antes de iniciar o estimulo por cartão ou por Facial.
 
 Falha.
 Quando receber Lib1 e o primeiro sensor interrompido for o 4, deve atracar o rele 4 porque esta no sentido errado ou fio invertido.
@@ -77,10 +86,13 @@ Se variável interna Modo_Operante=4=Sempre  Liberada sem bloqueio. Nunca atraca
 
 Os comandos de Lib1 e Lib2 continuam funcionando e comandando os reles 5 e 6 após conclusão de acesso.
 
-#Quando variável interna Forma_giro=2=Bidirecional - Deve interpretar a intensão de sentido de acesso 
+#Quando variável interna Forma_giro=2=Bidirecional => Deve interpretar a intensão de sentido de acesso 
 A interpretação inicia conforme o primeiro sensor interrompido. 
 Se Sensor 3 interrompido - Intensão de entrada
 Se Sensor 4 interrompido - Intensão de Saida
 
-(apenas Lib1 é usado. Se iniciou o giro para entrada e concluiu o acesso sinaliza no rele 5 entrada fechando o contato pelo 
-tempo em Time_TerminouE e se iniciou o sentido de saída e finalizou fecha o rele 6 Saída pelo tempo Time_TerminouS;
+Neste caso, apenas Lib1 é usado. 
+Se iniciou o giro para entrada e concluiu o acesso sinaliza no rele 5 entrada fechando o contato pelo tempo em Time_TerminouE e se 
+iniciou o sentido de saída e finalizou fecha o rele 6 Saída pelo tempo Time_TerminouS;
+
+GitHub em https://github.com/interaccesssistemas/Hoffer-ESP32/blob/main/Escopo-Firmware-Catraca
