@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escopo Funcionamento Catraca ESP32</title>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=eWJRB-H1e3kPbBDqN7s_YiHdDj5GX1fK6U_JxxzXSukkbLW1Z6OPkObxU5O2sCoNewNX6rP4p8-APZjGPtBUoNyM1Jy4kIhpt3BKaDMcPM-_dB5SN8K9yyGOgy3X8DTi01-xdVW0lLe0XPGyZRvPjiV1RFh3FW4-Rwm_9aZIrbMlezIWmwjVyaigW-M5js6d_RJPHQyTlK2MnEJHQStJ_gNjdhwDnFPW_OiayKA0GVJ8XkAI2GjXnhf_r2CSCwhqhuVYigkmZmO_BLvGmHd25ORzDuqwKNyC35oRChQbWa7lzaZirJJyiN0kKOZrwI9jpnKxJeflnSKUBxSXM_agPl_u23cOY78nui-Lliu8BlrqhYSkjZkvmN-TaqdP2-ezlJZQ8Ud1TxmowQS4ELr1OIA_OcRdfNplgLXSrGNXHm89nmqp7K0T983h0Mfamk_zkzMetqYj5sXRAGYYJee7aiAkFlT35C8HvnK7X6d84Jw1cgx6r3p5Dm3Swrq-v55JE-qe4nZDRbG7eKwTBM1ICmpvw0y0BMmt9Tc5zO_qqPTbDxZKMAl-beguDeAyVWJFsbPg_jIVsqNQUI-ZXX_oIMUgJ3oBOU6RbgWfjvpZQi6TTFNIIYxLk14ebwtXOKmHVQJVs4uKB-yn--BiW6BekBggk6zAn6rGgF8h1aPmUHCRIumwvOrb2f2IZEvqr5ra" charset="UTF-8"></script><style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 0;
+    background: #f3f4f6;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1f2937;
+    line-height: 1.7;
+  }
+  .doc-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .doc-title-card {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+    color: white;
+    padding: 32px 28px;
+    border-radius: 16px;
+    margin-bottom: 28px;
+    box-shadow: 0 10px 30px rgba(30, 58, 95, 0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-title-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .doc-title-card h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .doc-title-card .subtitle {
+    margin-top: 8px;
+    opacity: 0.85;
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+  .section-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .section-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .section-card h2 {
+    margin: 0 0 16px 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e5e7eb;
+  }
+  .section-card h2 .icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #1e3a5f, #2d5a87);
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .section-card h3 {
+    margin: 18px 0 10px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+  }
+  .section-card p {
+    margin: 0 0 12px 0;
+    color: #4b5563;
+    text-align: justify;
+  }
+  .section-card ul {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+  .section-card li {
+    margin-bottom: 8px;
+    color: #4b5563;
+  }
+  .section-card li strong {
+    color: #1e3a5f;
+  }
+  .highlight-box {
+    background: #f0f7ff;
+    border-left: 4px solid #2d5a87;
+    padding: 14px 18px;
+    border-radius: 0 10px 10px 0;
+    margin: 14px 0;
+  }
+  .highlight-box p {
+    margin: 0;
+    color: #1e3a5f;
+    font-weight: 500;
+  }
+  .tag {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #1e3a5f;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .io-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .io-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .io-item .io-label {
+    font-weight: 700;
+    color: #1e3a5f;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+  .io-item .io-desc {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+  .mode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 4px 0;
+  }
+  .mode-1 { background: #fee2e2; color: #991b1b; }
+  .mode-2 { background: #dcfce7; color: #166534; }
+  .mode-3 { background: #dbeafe; color: #1e40af; }
+  .mode-4 { background: #fef3c7; color: #92400e; }
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1e3a5f;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+  .github-link:hover {
+    background: #2d5a87;
+  }
+</style>
+</head>
+<body>
+<div class="doc-container">
+  <div class="doc-title-card">
+    <h1>Escopo Funcionamento Catraca com Placa ESP32</h1>
+    <div class="subtitle">Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento do giro da catraca</div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128203;</span>Descrição Geral</h2>
+    <p>Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento do giro da catraca, impedindo o acesso quando não houver um estímulo de liberação por contato seco.</p>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#9881;&#65039;</span>Variáveis Internas</h2>
+    <p>Configurações internas no Firmware para ligar e desligar controles:</p>
+    <ul>
+      <li><strong>TimeoutAcesso</strong> → <span class="tag">12 segundos</span> — Tempo para realizar o acesso. Se esgotado, volta a standby.</li>
+      <li><strong>Modo_Operante</strong> → <span class="tag">1 a 4</span> — 1=Bloqueada (Default), 2=Entrada Liberada, 3=Saída Liberada, 4=Sempre Liberada nos dois sentidos.</li>
+      <li><strong>Time_TerminouE</strong> → <span class="tag">1 segundo</span> — Tempo que o relé 3 fica fechado sinalizando "terminou Entrada".</li>
+      <li><strong>Time_TerminouS</strong> → <span class="tag">1 segundo</span> — Tempo que o relé 4 fica fechado sinalizando "terminou Saída".</li>
+      <li><strong>Forma_giro</strong> → <span class="tag">1 ou 2</span> — 1=Normal e Default (Lib1=Entrada e Lib2=Saída), 2=Bidirecional (apenas Lib1 é usado).</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128268;</span>Uso dos I/O Internos</h2>
+    <h3>Sensores (Entradas)</h3>
+    <div class="io-grid">
+      <div class="io-item"><span class="io-label">Sensor 3</span><span class="io-desc">Início de giro de entrada</span></div>
+      <div class="io-item"><span class="io-label">Sensor 4</span><span class="io-desc">Início de giro de saída</span></div>
+      <div class="io-item"><span class="io-label">Sensor 5</span><span class="io-desc">Lib 1 — Permite 1 giro de Entrada</span></div>
+      <div class="io-item"><span class="io-label">Sensor 6</span><span class="io-desc">Lib 2 — Permite 1 giro de Saída</span></div>
+    </div>
+    <h3 style="margin-top:20px">Relés (Saídas)</h3>
+    <div class="io-grid">
+      <div class="io-item"><span class="io-label">Relé 1</span><span class="io-desc">LED de Pictograma de Entrada Liberada (pulso Lib1)</span></div>
+      <div class="io-item"><span class="io-label">Relé 2</span><span class="io-desc">LED de Pictograma de Saída Liberada (pulso Lib2)</span></div>
+      <div class="io-item"><span class="io-label">Relé 3</span><span class="io-desc">Bloqueia entrada — retém fechado se não teve Lib1 (Sensor 3)</span></div>
+      <div class="io-item"><span class="io-label">Relé 4</span><span class="io-desc">Bloqueia saída — retém fechado se não teve Lib2 (Sensor 4)</span></div>
+      <div class="io-item"><span class="io-label">Relé 5</span><span class="io-desc">Pulso de conclusão de giro de Entrada</span></div>
+      <div class="io-item"><span class="io-label">Relé 6</span><span class="io-desc">Pulso de conclusão de giro de Saída</span></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128275;</span>Liberação de Giro — Forma_giro = 1 (Normal)</h2>
+    <ul>
+      <li><strong>Sensor 5 (Lib1)</strong> → Libera <strong>1 giro de Entrada</strong> → Atraca Relé 1 (Seta de Entrada Pictograma) pelo tempo de <strong>TimeoutAcesso</strong>.</li>
+      <li><strong>Sensor 6 (Lib2)</strong> → Libera <strong>1 giro de Saída</strong> → Atraca Relé 2 (Seta de Saída Pictograma) pelo tempo de <strong>TimeoutAcesso</strong>.</li>
+    </ul>
+    <div class="highlight-box">
+      <p>Após receber Lib1 ou Lib2, é possível realizar o acesso sem atracar nenhum relé até a conclusão do giro completo ou timeout. Ao concluir ou expirar o timeout, desliga os relés 1 e 2.</p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128721;</span>Bloqueio de Acesso em Standby</h2>
+    <p>Bloqueio quando faltou estímulo no sensor de liberação correspondente:</p>
+    <ul>
+      <li><strong>Sensor 3 (Low→High)</strong> → Retém <strong>Relé 3</strong> fechado para bloquear acesso de Entrada.</li>
+      <li><strong>Sensor 4 (Low→High)</strong> → Retém <strong>Relé 4</strong> fechado para bloquear acesso de Saída.</li>
+    </ul>
+    <div class="highlight-box">
+      <p>Enquanto um dos sensores 3 ou 4 estiver interrompido, o relé correspondente deve se manter fechado se não teve Lib1 ou Lib2.</p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#9989;</span>Giro do Braço — Conclusão de Acesso</h2>
+    <h3>Entrada</h3>
+    <p>Ao receber sinal no <strong>Sensor 3</strong>, se mantiver ativo e o <strong>Sensor 4</strong> também receber sinal e manter ativo, então abre o Sensor 3 e em seguida abre o Sensor 4.</p>
+    <h3>Saída</h3>
+    <p>Ao receber sinal no <strong>Sensor 4</strong>, se mantiver ativo e o <strong>Sensor 3</strong> também receber sinal e manter ativo, então abre o Sensor 4 e em seguida abre o Sensor 3.</p>
+    <div class="highlight-box">
+      <p>Após conclusão de Entrada → desliga Relé 1. Após conclusão de Saída → desliga Relé 2.</p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#129504;</span>Lógica Adicional para Teste em Campo</h2>
+    <p><strong>Cenário:</strong> usuário empurra o braço antes da placa receber o pulso de Lib1, mas quer passar.</p>
+    <ul>
+      <li>Se o <strong>Sensor 3</strong> estiver acionado e ocorrer o estímulo de liberação <strong>Lib1</strong>, o Sensor 3 vai a estado <strong>LOW</strong>, ignorando o primeiro estado atual e iniciando o ciclo de conclusão de acesso.</li>
+    </ul>
+    <h3>Falha de Sentido</h3>
+    <ul>
+      <li>Recebeu <strong>Lib1</strong> e o primeiro sensor interrompido foi o <strong>Sensor 4</strong> → atraca <strong>Relé 4</strong> (sentido errado ou fio invertido).</li>
+      <li>Recebeu <strong>Lib2</strong> e o primeiro sensor interrompido foi o <strong>Sensor 3</strong> → atraca <strong>Relé 3</strong> (sentido errado ou fio invertido).</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#9201;&#65039;</span>Timeout do Acesso</h2>
+    <p>Para voltar a <strong>standby</strong>, o usuário tem <span class="tag">12 segundos</span> (variável interna <strong>TimeoutAcesso</strong>) para realizar o acesso.</p>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128225;</span>Informação Física do Acesso (Pulso de Conclusão)</h2>
+    <ul>
+      <li>Após concluir acesso de <strong>Entrada</strong> → pulsa <span class="tag">1 segundo</span> o <strong>Relé 5</strong>.</li>
+      <li>Após concluir acesso de <strong>Saída</strong> → pulsa <span class="tag">1 segundo</span> o <strong>Relé 6</strong>.</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#129689;</span>Cofre Coletor de Saída de Visitante</h2>
+    <p>Ligar em <strong>paralelo</strong> no <strong>Relé 2</strong> de Pictograma de Saída (Sensor 4).</p>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128737;&#65039;</span>Inteligência de Exceções — Modos de Operação</h2>
+    <p>Os comandos de <strong>Lib1</strong> e <strong>Lib2</strong> continuam funcionando e comandando os relés 5 e 6 após conclusão de acesso.</p>
+    <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px;">
+      <div class="mode-badge mode-1">&#128683; Modo 1 — Bloqueada (Default)</div>
+      <div style="width:100%; color:#64748b; font-size:0.9rem; margin-bottom:8px;">Funciona com toda a inteligência descrita acima.</div>
+      <div class="mode-badge mode-2">&#128994; Modo 2 — Entrada Liberada</div>
+      <div style="width:100%; color:#64748b; font-size:0.9rem; margin-bottom:8px;">Sem bloqueio. <strong>Nunca</strong> atraca o Relé 3 de entrada.</div>
+      <div class="mode-badge mode-3">&#128308; Modo 3 — Saída Liberada</div>
+      <div style="width:100%; color:#64748b; font-size:0.9rem; margin-bottom:8px;">Sem bloqueio. <strong>Nunca</strong> atraca o Relé 4 de saída.</div>
+      <div class="mode-badge mode-4">&#128993; Modo 4 — Sempre Liberada</div>
+      <div style="width:100%; color:#64748b; font-size:0.9rem; margin-bottom:8px;">Sem bloqueio. <strong>Nunca</strong> atraca os Relés 3 e 4.</div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128260;</span>Forma_giro = 2 — Bidirecional</h2>
+    <p>Deve interpretar a <strong>intenção de sentido de acesso</strong> conforme o primeiro sensor interrompido:</p>
+    <ul>
+      <li><strong>Sensor 3</strong> interrompido → Intenção de <strong>Entrada</strong></li>
+      <li><strong>Sensor 4</strong> interrompido → Intenção de <strong>Saída</strong></li>
+    </ul>
+    <div class="highlight-box">
+      <p>Neste caso, <strong>apenas Lib1 é usado</strong>. Se iniciou o giro para entrada e concluiu → sinaliza no <strong>Relé 5</strong> (fecha contato pelo tempo <strong>Time_TerminouE</strong>). Se iniciou sentido de saída e finalizou → fecha o <strong>Relé 6</strong> (pelo tempo <strong>Time_TerminouS</strong>).</p>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2><span class="icon">&#128279;</span>Repositório GitHub</h2>
+    <p>O escopo completo do firmware está disponível no repositório oficial:</p>
+    <a class="github-link" href="https://github.com/interaccesssistemas/Hoffer-ESP32/blob/main/Escopo-Firmware-Catraca" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      interaccesssistemas/Hoffer-ESP32
+    </a>
+  </div>
+</div>
+</body>
+</html>
