@@ -1,0 +1,89 @@
+##Escopo Funcionamento Catraca com placa ESP32
+
+#Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento o giro da catraca impedindo o acesso quando não houver um estimulo de liberação por contato seco. 
+
+#Variáveis Internas - 
+Configurações internas no Firmware para ligar e desligar controles
+
+TimeoutAcesso	=> 12 (Tempo para realizar o acesso. Se esgotado volta a standby);
+Modo_Operante 	=> 1=Bloqueada (Default), 2=Entrada Liberada, 3=Saida Liberada e 4=Sempre Liberada nos dois sentidos
+Time_TerminouE  => 1 (1 segundo) (tempo que o rele 3 fica fechado sinalizando terminou Entrada);
+Time_TerminouS  => 1 (1 segundo) (tempo que o rele 4 fica fechado sinalizando terminou Saída);
+Forma_giro	=> 1=Normal e Default (Lib1=Entrada e Lib2=Saida), 2=Bidirecional (apenas Lib1 é usado. Se iniciou o giro para entrada e concluiu o acesso sinaliza no rele 5 entrada fechando o contato pelo tempo em Time_TerminouE e se iniciou o sentido de saída e finalizou fecha o rele 6 Saída pelo tempo Time_TerminouS;
+
+#Uso dos I/O internos
+Sensor 3 - Inicio de giro de entrada
+Sensor 4 - Inicio de giro de Saida
+Sensor 5 - Lib 1 - Permite 1 giro de Entrada
+Sensor 6 - Lib 2 - Permite 1 giro de Saída
+
+Rele 1 - Led de Pictograma de Entrada Liberada porque teve pulso no Lib1
+Rele 2 - Led de Pictograma de Saida   Liberada porque teve pulso no Lib2
+Rele 3 - Sensor Bloqueia entrada retem fechado se não teve lib1 porque tentou acessar interrompendo S3 (Entrada)
+Rele 4 - Sensor Bloqueia Saida   retem fechado se não teve lib2 porque tentou acessar interrompendo S4 (Saida)
+Rele 5 - Informa Pulso de Conclusão de giro de Entrada
+Rele 6 - Informa Pulso de Conclusão de giro de Saída
+
+Segue a documentação dos I/O necessários, cenários de uso e funcionamento.
+Operação quando variável interna Forma_giro=1  (Normal e Default )
+
+#Liberação de Giro
+Sensor 5 é o pulso Lib1 => Libera 1 giro de Entrada => Atraca Rele 1 (Seta de Entrada Pictograma) no tempo de TimeoutAcesso 
+Sensor 6 é o pulso Lib2 => Libera 1 giro de Saída   => Atraca Rele 2 (Seta de Saída   Pictograma) no tempo de TimeoutAcesso
+
+Após receber o pulso de Lib1 ou Lib2, é possível realizar o acesso sem atracar nenhum relê até a conclusão do acesso que é o giro completo ou timeout definido na variável TimeoutAcesso.
+
+Quando concluir o acesso (giro completo) ou por timeout, deve desligar os relês 1 e 2 de Led de pictograma orientativo
+
+#Sensores de Giro do Braço
+Bloqueio de Acesso quando standby e faltou estimulo no sensor 5=Lib1-Entrada ou sensor 6=Lib2-Saida
+Sensor 3 de Low=>High reter Relê 3 para bloquear acesso de Entrada 
+Sensor 4 de Low=>High reter Relê 4 para bloquear acesso de Saída
+
+Enquanto um dos sensores 3 ou 4 estiver interrompido o relê correspondente deve se manter fechado se não teve Lib1 ou Lib2.
+
+#Giro do braço - Conclusão de acesso
+Entrada - A logica é interromper o sensor 3 e manter fechado, depois interromper o sensor 4 e manter fechado, depois abre o sensor 3 e abre o sensor 4;
+
+Saída - A logica é interromper o sensor 4 e manter fechado, depois interromper o sensor 3 e manter fechado, depois abre o sensor 4 e abre o sensor 3; 
+
+Após a conclusão do Acesso de entrada, deve desligar o rele 1 que é o Led de Pictograma de Entrada
+Após a conclusão do Acesso de Saída,   deve desligar o rele 2 que é o Led de Pictograma de Saída
+
+Falha.
+Quando receber Lib1 e o primeiro sensor interrompido for o 4, deve atracar o rele 4 porque esta no sentido errado ou fio invertido.
+Quando receber Lib2 e o primeiro sensor interrompido for o 3, deve atracar o rele 3 porque esta no sentido errado ou fio invertido.
+
+#Timeout do acesso
+Para voltar a standby o usuário tem 12 segundo de timeout para realizar o acesso (variável interna TimeoutAcesso)
+
+#Informação Física do Acesso (Pulso de conclusão) 
+Após concluir acesso de Entrada pulsa 1 segundo o rele 5
+Após concluir acesso de Saída   pulsa 1 segundo o rele 6
+
+#Cofre coletor de Saída de Visitante ligar em paralelo no rele 2 de Pictograma de Saída 
+Sendo Sensor 4 
+
+#Inteligencia de Exceções
+Se variável interna Modo_Operante=1=Bloqueada (Default), funciona com toda a inteligência acima
+Se variável interna Modo_Operante=2=Entrada Liberada sem bloqueio. Nunca atraca o rele 3 de entrada
+Se variável interna Modo_Operante=3=Saída   Liberada sem bloqueio. Nunca atraca o rele 4 de saída
+Se variável interna Modo_Operante=4=Sempre  Liberada sem bloqueio. Nunca atraca os relês 3 e 4 
+
+Os comandos de Lib1 e Lib2 continuam funcionando e comandando os reles 5 e 6 após conclusão de acesso.
+
+#Quando variável interna Forma_giro=2=Bidirecional - Deve interpretar a intensão de sentido de acesso 
+A interpretação inicia conforme o primeiro sensor interrompido. 
+Se Sensor 3 interrompido - Intensão de entrada
+Se Sensor 4 interrompido - Intensão de Saida
+
+(apenas Lib1 é usado. Se iniciou o giro para entrada e concluiu o acesso sinaliza no rele 5 entrada fechando o contato pelo tempo em Time_TerminouE e se iniciou o sentido de saída e finalizou fecha o rele 6 Saída pelo tempo Time_TerminouS;
+
+
+
+
+
+
+
+
+
