@@ -1,6 +1,7 @@
-#Escopo Funcionamento Catraca com placa ESP32
+#
+# Escopo Funcionamento Catraca com placa ESP32
 
-#Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento o giro da catraca impedindo o acesso 
+# Desenvolvimento de firmware para acesso de pedestre, pictograma orientativo e gerenciamento o giro da catraca impedindo o acesso 
 quando não houver um estimulo de liberação por contato seco. 
 
 #Variáveis Internas - 
